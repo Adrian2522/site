@@ -19,6 +19,26 @@
   </style>
 </head>
 <body>
+  <div id="login-form" class="container">
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="card shadow-lg">
+          <div class="card-body p-4">
+            <h2 class="card-title text-center mb-4">Logowanie</h2>
+            <form id="passwordForm">
+              <div class="mb-3">
+                <label for="passwordInput" class="form-label">Hasło:</label>
+                <input type="password" class="form-control" id="passwordInput" required>
+              </div>
+              <button type="submit" class="btn btn-primary w-100">Zaloguj</button>
+              <div id="error-message" class="alert alert-danger mt-3" style="display:none;"></div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div id="content" class="container" style="display:none;">
     <div class="row justify-content-center">
       <div class="col-12 col-md-8 col-lg-6">
@@ -30,24 +50,34 @@
         </div>
       </div>
     </div>
+    <div class="row justify-content-center mt-4">
+      <div class="col-12 col-md-8 col-lg-6">
+        <div class="card shadow">
+          <div class="card-body text-center p-3">
+            <h5 class="card-title mb-3">Hasło</h5>
+            <p class="card-text lead">admin</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
   <script>
-    let password;
-    while (password !== "admin") {
-      password = prompt("Podaj hasło, aby uzyskać dostęp:");
-      if (password === null) {
-        alert("Dostęp został anulowany.");
-        break;
+    document.getElementById("passwordForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const password = document.getElementById("passwordInput").value;
+      const errorMessage = document.getElementById("error-message");
+      
+      if (password === "admin") {
+        document.getElementById("login-form").style.display = "none";
+        document.getElementById("content").style.display = "block";
+      } else {
+        errorMessage.textContent = "Nieprawidłowe hasło! Spróbuj ponownie.";
+        errorMessage.style.display = "block";
+        document.getElementById("passwordInput").value = "";
       }
-      if (password !== "admin") {
-        alert("Nieprawidłowe hasło! Spróbuj ponownie.");
-      }
-    }
-    if (password === "admin") {
-      document.getElementById("content").style.display = "block";
-    }
+    });
   </script>
 </body>
 </html>
