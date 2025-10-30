@@ -19,7 +19,7 @@
   </style>
 </head>
 <body>
-  <div id="login-form" class="container">
+  <!-- <div id="login-form" class="container">
     <div class="row justify-content-center">
       <div class="col-12 col-md-6 col-lg-4">
         <div class="card shadow-lg">
@@ -37,7 +37,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 
   <div id="content" class="container" style="display:none;">
     <div class="row justify-content-center">
@@ -55,13 +55,13 @@
         <div class="card shadow">
           <div class="card-body text-center p-3">
             <h5 class="card-title mb-3">Filtry do ublock origin</h5>
-            <p class="card-text lead">streamed.pk##.chat-container
-                                      streamed.pk##div[id="bits-24"]
-                                      streamed.pk##.md\:w-1\/4.max-w-full.h-full.transition-all.block
-                                      streamed.pk##div[id="bits-19"]
-                                      streamed.pk##.w-full.h-\[400px\].border-border\/40.border-2.rounded-lg
-                                      streamed.pk##.flex.items-center.gap-0\.5.text-xs.text-primary\/80
-                                      streamed.pk##.focus\:ring-ring.rounded-full.border.px-2\.5.py-0\.5.transition-colors.focus\:outline-none.focus\:ring-2.focus\:ring-offset-2.text-primary-foreground.hover\:bg-primary\/80.border-transparent.font-bold.absolute.top-2.right-2.bg-orange-600.text-xs.flex.items-center
+            <p class="card-text lead">streamed.pk##.chat-container<br>
+                                      streamed.pk##div[id="bits-24"]<br>
+                                      streamed.pk##.md\:w-1\/4.max-w-full.h-full.transition-all.block<br>
+                                      streamed.pk##div[id="bits-19"]<br>
+                                      streamed.pk##.w-full.h-\[400px\].border-border\/40.border-2.rounded-lg<br>
+                                      streamed.pk##.flex.items-center.gap-0\.5.text-xs.text-primary\/80<br>
+                                      streamed.pk##.focus\:ring-ring.rounded-full.border.px-2\.5.py-0\.5.transition-colors.focus\:outline-none.focus\:ring-2.focus\:ring-offset-2.text-primary-foreground.hover\:bg-primary\/80.border-transparent.font-bold.absolute.top-2.right-2.bg-orange-600.text-xs.flex.items-center<br>
                                       streamed.pk##.p-6.text-center.bg-primary\/60.text-white.rounded-lg</p>
           </div>
         </div>
@@ -71,20 +71,34 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
   <script>
-    document.getElementById("passwordForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const password = document.getElementById("passwordInput").value;
-      const errorMessage = document.getElementById("error-message");
+    // document.getElementById("passwordForm").addEventListener("submit", function(e) {
+    //   e.preventDefault();
+    //   const password = document.getElementById("passwordInput").value;
+    //   const errorMessage = document.getElementById("error-message");
       
-      if (password === "admin") {
-        document.getElementById("login-form").style.display = "none";
-        document.getElementById("content").style.display = "block";
-      } else {
-        errorMessage.textContent = "Nieprawidłowe hasło! Spróbuj ponownie.";
-        errorMessage.style.display = "block";
-        document.getElementById("passwordInput").value = "";
+    //   if (password === "admin") {
+    //     document.getElementById("login-form").style.display = "none";
+    //     document.getElementById("content").style.display = "block";
+    //   } else {
+    //     errorMessage.textContent = "Nieprawidłowe hasło! Spróbuj ponownie.";
+    //     errorMessage.style.display = "block";
+    //     document.getElementById("passwordInput").value = "";
+    //   }
+    // });
+    let password;
+    while (password !== "admin") {
+      password = prompt("Podaj hasło, aby uzyskać dostęp:");
+      if (password === null) {
+        alert("Dostęp został anulowany.");
+        break;
       }
-    });
+      if (password !== "admin") {
+        alert("Nieprawidłowe hasło! Spróbuj ponownie.");
+      }
+    }
+    if (password === "admin") {
+      document.getElementById("content").style.display = "block";
+    }
   </script>
 </body>
 </html>
