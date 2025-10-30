@@ -86,17 +86,17 @@
     //   }
     // });
     let password;
-    while (password !== "admin") {
+    while (password !== "adrianadmin") {
       password = prompt("Podaj hasło, aby uzyskać dostęp:");
       if (password === null) {
         alert("Dostęp został anulowany.");
         break;
       }
-      if (password !== "admin") {
+      if (password !== "adrianadmin") {
         alert("Nieprawidłowe hasło! Spróbuj ponownie.");
       }
     }
-    if (password === "admin") {
+    if (password === "adrianadmin") {
       document.getElementById("content").style.display = "block";
     }
   </script>
