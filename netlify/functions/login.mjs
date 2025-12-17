@@ -1,5 +1,33 @@
 import { neon } from "@netlify/neon";
 
+async function ensureTablesExist(sql) {
+  // Create admin_users table if not exists
+  await sql`
+    CREATE TABLE IF NOT EXISTS admin_users (
+      id SERIAL PRIMARY KEY,
+      password_hash VARCHAR(255) NOT NULL,
+      is_active BOOLEAN DEFAULT true,
+      created_at TIMESTAMP DEFAULT NOW()
+    )
+  `;
+
+  // Create sessions table if not exists
+  await sql`
+    CREATE TABLE IF NOT EXISTS sessions (
+      id SERIAL PRIMARY KEY,
+      token VARCHAR(255) UNIQUE NOT NULL,
+      expires_at TIMESTAMP NOT NULL,
+      created_at TIMESTAMP DEFAULT NOW()
+    )
+  `;
+
+  // Check if admin user exists, create if not
+  const existingUser = await sql`SELECT id FROM admin_users LIMIT 1`;
+  if (existingUser.length === 0) {
+    await sql`INSERT INTO admin_users (password_hash) VALUES ('adrianadmin')`;
+  }
+}
+
 export default async (request) => {
   if (request.method !== "POST") {
     return new Response(JSON.stringify({ error: "Method not allowed" }), {
@@ -19,6 +47,9 @@ export default async (request) => {
     }
 
     const sql = neon();
+
+    // Ensure tables exist before querying
+    await ensureTablesExist(sql);
 
     // Check if password matches in database
     const result = await sql`SELECT id FROM admin_users WHERE password_hash = ${password} AND is_active = true LIMIT 1`;
