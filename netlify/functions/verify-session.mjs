@@ -1,5 +1,16 @@
 import { neon } from "@netlify/neon";
 
+async function ensureSessionsTableExists(sql) {
+  await sql`
+    CREATE TABLE IF NOT EXISTS sessions (
+      id SERIAL PRIMARY KEY,
+      token VARCHAR(255) UNIQUE NOT NULL,
+      expires_at TIMESTAMP NOT NULL,
+      created_at TIMESTAMP DEFAULT NOW()
+    )
+  `;
+}
+
 export default async (request) => {
   if (request.method !== "POST") {
     return new Response(JSON.stringify({ error: "Method not allowed" }), {
@@ -19,6 +30,9 @@ export default async (request) => {
     }
 
     const sql = neon();
+
+    // Ensure sessions table exists
+    await ensureSessionsTableExists(sql);
 
     // Check if token exists and is not expired
     const result = await sql`SELECT id FROM sessions WHERE token = ${token} AND expires_at > NOW() LIMIT 1`;
