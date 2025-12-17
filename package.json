@@ -1,0 +1,9 @@
+{
+  "name": "adrian-website",
+  "version": "1.0.0",
+  "description": "Adrian's personal website with password protection",
+  "type": "module",
+  "dependencies": {
+    "@netlify/neon": "^0.1.0"
+  }
+}

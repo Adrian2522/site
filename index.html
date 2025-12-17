@@ -19,7 +19,7 @@
   </style>
 </head>
 <body>
-  <!-- <div id="login-form" class="container">
+  <div id="login-form" class="container">
     <div class="row justify-content-center">
       <div class="col-12 col-md-6 col-lg-4">
         <div class="card shadow-lg">
@@ -30,14 +30,14 @@
                 <label for="passwordInput" class="form-label">Hasło:</label>
                 <input type="password" class="form-control" id="passwordInput" required>
               </div>
-              <button type="submit" class="btn btn-primary w-100">Zaloguj</button>
+              <button type="submit" class="btn btn-primary w-100" id="loginBtn">Zaloguj</button>
               <div id="error-message" class="alert alert-danger mt-3" style="display:none;"></div>
             </form>
           </div>
         </div>
       </div>
     </div>
-  </div> -->
+  </div>
 
   <div id="content" class="container" style="display:none;">
     <div class="row justify-content-center">
@@ -46,6 +46,7 @@
           <div class="card-body text-center p-4 p-md-5">
             <h1 class="card-title display-4 mb-4">Adrian</h1>
             <p class="card-text lead">Hello its my website</p>
+            <button id="logoutBtn" class="btn btn-outline-secondary mt-3">Wyloguj</button>
           </div>
         </div>
       </div>
@@ -71,34 +72,85 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
   <script>
-    // document.getElementById("passwordForm").addEventListener("submit", function(e) {
-    //   e.preventDefault();
-    //   const password = document.getElementById("passwordInput").value;
-    //   const errorMessage = document.getElementById("error-message");
-      
-    //   if (password === "admin") {
-    //     document.getElementById("login-form").style.display = "none";
-    //     document.getElementById("content").style.display = "block";
-    //   } else {
-    //     errorMessage.textContent = "Nieprawidłowe hasło! Spróbuj ponownie.";
-    //     errorMessage.style.display = "block";
-    //     document.getElementById("passwordInput").value = "";
-    //   }
-    // });
-    let password;
-    while (password !== "adrianadmin") {
-      password = prompt("Podaj hasło, aby uzyskać dostęp:");
-      if (password === null) {
-        alert("Dostęp został anulowany.");
-        break;
+    const SESSION_KEY = 'adrian_session_token';
+
+    // Check for existing session on page load
+    async function checkSession() {
+      const token = localStorage.getItem(SESSION_KEY);
+      if (token) {
+        try {
+          const response = await fetch('/api/verify-session', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token })
+          });
+          const data = await response.json();
+          if (data.valid) {
+            showContent();
+            return;
+          } else {
+            localStorage.removeItem(SESSION_KEY);
+          }
+        } catch (error) {
+          console.error('Session check error:', error);
+        }
       }
-      if (password !== "adrianadmin") {
-        alert("Nieprawidłowe hasło! Spróbuj ponownie.");
+      showLogin();
+    }
+
+    function showContent() {
+      document.getElementById('login-form').style.display = 'none';
+      document.getElementById('content').style.display = 'block';
+    }
+
+    function showLogin() {
+      document.getElementById('login-form').style.display = 'block';
+      document.getElementById('content').style.display = 'none';
+    }
+
+    document.getElementById('passwordForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const password = document.getElementById('passwordInput').value;
+      const errorMessage = document.getElementById('error-message');
+      const loginBtn = document.getElementById('loginBtn');
+
+      loginBtn.disabled = true;
+      loginBtn.textContent = 'Logowanie...';
+      errorMessage.style.display = 'none';
+
+      try {
+        const response = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          localStorage.setItem(SESSION_KEY, data.token);
+          showContent();
+        } else {
+          errorMessage.textContent = data.message || 'Nieprawidłowe hasło! Spróbuj ponownie.';
+          errorMessage.style.display = 'block';
+          document.getElementById('passwordInput').value = '';
+        }
+      } catch (error) {
+        errorMessage.textContent = 'Błąd połączenia z serwerem. Spróbuj ponownie.';
+        errorMessage.style.display = 'block';
+      } finally {
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'Zaloguj';
       }
-    }
-    if (password === "adrianadmin") {
-      document.getElementById("content").style.display = "block";
-    }
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', function() {
+      localStorage.removeItem(SESSION_KEY);
+      showLogin();
+    });
+
+    // Initialize on page load
+    checkSession();
   </script>
 </body>
 </html>
